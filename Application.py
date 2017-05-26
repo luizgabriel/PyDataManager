@@ -1,6 +1,8 @@
 from tkinter import Tk
 
 from services.PreferencesService import PreferencesService
+from windows.MainManagerWindow import MainManagerWindow
+
 
 class Application(Tk):
     def __init__(self):
