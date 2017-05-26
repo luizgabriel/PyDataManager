@@ -1,14 +1,88 @@
-import os
+import json, os
+
+def get(data, key, default):
+    try:
+        return data[key]
+    except KeyError:
+        return default
+
+class Attribute:
+
+    def __init__(self, data):
+        self._name = get(data, 'name', None)
+        self._type = get(data, 'type', None)
+        self._required = get(data, 'required', True)
+        self._default = get(data, 'default', None)
+
+    def name(self):
+        return self._name
+
+    def type(self):
+        return self._type
+
+    def required(self):
+        return self._required
+
+    def default(self):
+        return self._default
+
+class Model:
+
+    def __init__(self, data):
+        self._title = get(data, 'title', None)
+        self._singular = get(data, 'singular', None)
+        self._plural = get(data, 'plural', None)
+        self._attributes = []
+
+        for attr in data['fields']:
+            self.add_attribute(attr)
+
+    def title(self):
+        return self._title
+
+    def singular(self):
+        return self._singular
+
+    def plural(self):
+        return self._plural
+
+    def attributes_count(self):
+        return len(self._attributes)
+
+    def add_attribute(self, data):
+        self._attributes.append(Attribute(data))
+
+    def attributes(self):
+        return self._attributes
+
+    def attribute(self, i=0, name=None):
+        if name is not None:
+            for attr in self.attributes():
+                if attr.name() == name:
+                    return attr
+
+            return None
+        else:
+            return self._attributes[i]
 
 class ModelManager:
 
-    def __init__(self):
-        self._folder = 'storage/models/'
+    def __init__(self, folder):
+        self._folder = folder
         self._models = {}
         self.load()
 
     def load(self):
-        #TODO: load model files in _folder
+        for (dirpath, dirnames, filenames) in os.walk(self._folder):
+            for file in filenames:
+                self.add_model_file(file)
+
+    def add_model_file(self, file):
+        with open(self._folder + file) as f:
+            self._models[file] = Model(json.load(f))
+
+    def count(self):
+        return len(self._models)
 
     def get(self, model_key):
-        return self._models[model_key]
+        return self._models[model_key + '.json']
