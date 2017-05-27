@@ -14,7 +14,6 @@ class MainFrame(tk.Frame):
     def on_double_click_item(self, event):
         item = self.table_model.selection()[0]
         key = self.table_model.item(item, "text")
-        print("you clicked on %s" % key)
         self.presenter.on_click_open_model(key)
 
     def intialize_components(self):
