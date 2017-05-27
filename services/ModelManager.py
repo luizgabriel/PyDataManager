@@ -26,13 +26,21 @@ class Attribute:
     def default(self):
         return self._default
 
+    def data(self):
+        return {
+            'name': self.name(),
+            'type': self.type(),
+            'required': self.required(),
+            'default': self.default()
+        }
+
 class Model:
 
     def __init__(self, data):
         self._title = get(data, 'title', None)
         self._singular = get(data, 'singular', None)
         self._plural = get(data, 'plural', None)
-        self._attributes = []
+        self._fields = []
 
         for attr in data['fields']:
             self.add_attribute(attr)
@@ -46,24 +54,29 @@ class Model:
     def plural(self):
         return self._plural
 
-    def attributes_count(self):
-        return len(self._attributes)
-
     def add_attribute(self, data):
-        self._attributes.append(Attribute(data))
+        self._fields.append(Attribute(data))
 
-    def attributes(self):
-        return self._attributes
+    def fields(self):
+        return self._fields
 
-    def attribute(self, i=0, name=None):
+    def field(self, i=0, name=None):
         if name is not None:
-            for attr in self.attributes():
+            for attr in self.fields():
                 if attr.name() == name:
                     return attr
 
             return None
         else:
-            return self._attributes[i]
+            return self._fields[i]
+
+    def data(self):
+        return {
+            'title': self.title(),
+            'singular': self.singular(),
+            'plural': self.plural(),
+            'fields': [t.data() for t in self.fields()]
+        }
 
 class ModelManager:
 
@@ -77,6 +90,10 @@ class ModelManager:
             for file in filenames:
                 self.add_model_file(file)
 
+    def save(self, name, model):
+        with open(self._folder + name, 'w+') as f:
+            f.write(json.dumps(model.data()))
+
     def add_model_file(self, file):
         with open(self._folder + file) as f:
             self._models[file] = Model(json.load(f))
@@ -85,4 +102,11 @@ class ModelManager:
         return len(self._models)
 
     def get(self, model_key):
-        return self._models[model_key + '.json']
+        if '.json' in model_key:
+            key = model_key
+        else:
+            key = model_key
+        return self._models[key]
+
+    def models(self):
+        return self._models.items()

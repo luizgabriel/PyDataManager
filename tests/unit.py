@@ -17,15 +17,17 @@ class ModelManagerTest(TestCase):
         self.assertIsNotNone(self.mock.get('TestModel'))
 
     def testGetModelData(self):
+        self.assertEquals(len(self.mock.models()), 1)
+
         model = self.mock.get('TestModel')
         self.assertEquals(model.title(), "Teste de Modelo")
         self.assertEquals(model.singular(), "Teste")
         self.assertEquals(model.plural(), "Testes")
-        self.assertEquals(model.attributes_count(), 2)
+        self.assertEquals(len(model.fields()), 2)
 
     def testGetModelAttributes(self):
         model = self.mock.get('TestModel')
-        param1, param2 = model.attributes()
+        param1, param2 = model.fields()
         self.assertEquals(param1.name(), "param1")
         self.assertEquals(param1.type(), "text")
         self.assertTrue(param1.required())
@@ -36,7 +38,8 @@ class ModelManagerTest(TestCase):
         self.assertFalse(param2.required())
         self.assertEquals(param2.default(), 5)
 
-        self.assertEquals(model.attribute(0), model.attribute(name="param1"))
+        self.assertEquals(model.field(0), model.field(name="param1"))
+        self.assertEquals(model.field(1), model.field(name="param2"))
 
 
 
