@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from presenters.MainPresenter import MainPresenter
 from windows.LoadModelDialog import LoadModelDialog
+from windows.ModelManagerFrame import ModelManagerFrame
 
 
 class MainFrame(tk.Frame):
@@ -50,6 +51,7 @@ class MainFrame(tk.Frame):
         file, model = dialog.open()
         self.presenter.on_load_model(file, model)
 
-    def open_model_manager_screen(self, model):
-        #TODO: Open model manager screen
-        raise NotImplemented()
+    def open_model_manager_screen(self, model_key):
+        frame = ModelManagerFrame(self.master, model_key)
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.tkraise()

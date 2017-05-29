@@ -93,6 +93,7 @@ class ModelManager:
     def save(self, name, model):
         with open(self._folder + name, 'w+') as f:
             f.write(json.dumps(model.data()))
+        self.load()
 
     def add_model_file(self, file):
         with open(self._folder + file) as f:

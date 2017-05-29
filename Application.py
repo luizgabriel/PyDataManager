@@ -16,6 +16,10 @@ class Application():
     def model_manager(self):
         return self._model_manager
 
+    def open_main(self):
+        self._main_window.tkraise()
+
     def run(self):
-        self._main_window = MainFrame(self._root).pack()
+        self._main_window = MainFrame(self._root)
+        self._main_window.grid(row=0, column=0, sticky="nsew")
         self._root.mainloop()
