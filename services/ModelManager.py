@@ -26,6 +26,9 @@ class Attribute:
     def default(self):
         return self._default
 
+    def has_default(self):
+        return self.default() != None
+
     def data(self):
         return {
             'name': self.name(),

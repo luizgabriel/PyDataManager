@@ -10,14 +10,14 @@ class MainFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.presenter = MainPresenter(self)
-        self.intialize_components()
+        self.initialize_components()
 
     def on_double_click_item(self, event):
         item = self.table_model.selection()[0]
         key = self.table_model.item(item, "text")
         self.presenter.on_click_open_model(key)
 
-    def intialize_components(self):
+    def initialize_components(self):
         self.master.title("Gerenciador de Dados")
 
         '''
@@ -48,8 +48,18 @@ class MainFrame(tk.Frame):
 
     def open_load_model_dialog(self):
         dialog = LoadModelDialog()
-        file, model = dialog.open()
-        self.presenter.on_load_model(file, model)
+        try:
+            file, model = dialog.open()
+            self.presenter.on_load_model(file, model)
+        except:
+            pass
+
+    def show(self):
+        self.tkraise()
+        self.presenter.on_show()
+
+    def clear_list(self):
+        self.table_model.delete(*self.table_model.get_children())
 
     def open_model_manager_screen(self, model_key):
         frame = ModelManagerFrame(self.master, model_key)

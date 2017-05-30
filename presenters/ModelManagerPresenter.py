@@ -15,18 +15,20 @@ class ModelManagerPresenter(BasePresenter):
 
     def on_create(self):
         self.view.set_model_config(self.model)
-
         self.view.init_header(self.model.fields())
 
         try:
-            for idx, row in self.data.read().iterrows():
-                self.view.add_data_row(idx, row)
+            for idx, data in self.data.all():
+                values = [data.value(f) for f in self.model.fields()]
+                self.view.add_data_row(idx, values)
         except EmptyDataError:
             pass
 
     def on_click_back_btn(self):
-        self.data.close()
         app.Application.instance().open_main()
 
     def on_click_add_btn(self):
-        self.view.open_add_window()
+        self.view.open_model_window()
+
+    def on_click_edit_item(self, idx):
+        self.view.open_model_window(idx)

@@ -17,7 +17,7 @@ class Application():
         return self._model_manager
 
     def open_main(self):
-        self._main_window.tkraise()
+        self._main_window.show()
 
     def run(self):
         self._main_window = MainFrame(self._root)
