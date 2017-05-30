@@ -69,7 +69,7 @@ class DataManager:
 
     def save(self, data):
         if data.id() is None:
-            self._data.append(data.data())
+            self._data.append((data.id(), data))
 
         with open(self._file, 'w+') as fp:
             writer = csv.writer(fp, delimiter=',', lineterminator='\n')
